@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#d9480f"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Smolov 스쿼트 트래커</title>
+<style>
+:root{--bg:#f6f6f4;--card:#fff;--tx:#1a1a1a;--mu:#6b6b6b;--ac:#d9480f;--ln:#e3e3df;--ok:#2b8a3e;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141414;--card:#202020;--tx:#f0f0ee;--mu:#9a9a96;--ac:#ff8a4c;--ln:#333;--ok:#69db7c}}
+:root[data-theme="dark"]{--bg:#141414;--card:#202020;--tx:#f0f0ee;--mu:#9a9a96;--ac:#ff8a4c;--ln:#333;--ok:#69db7c}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 -apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
+#app{max-width:520px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:4px 0 14px}h2{font-size:17px;margin:0 0 8px}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:14px;margin-bottom:12px}
+.mu{color:var(--mu);font-size:13px}
+.row{display:flex;gap:8px;align-items:center}.row>*{flex:1}
+button,input,select{font:inherit;color:var(--tx)}
+input{width:100%;padding:12px;border:1px solid var(--ln);border-radius:10px;background:var(--bg);font-size:22px;text-align:center}
+.btn{padding:13px;border-radius:12px;border:1px solid var(--ln);background:var(--card);cursor:pointer}
+.btn.on{background:var(--ac);border-color:var(--ac);color:#fff}
+.big{width:100%;padding:20px;font-size:20px;font-weight:700;border:0;border-radius:16px;background:var(--ac);color:#fff;cursor:pointer}
+.big.rest{background:#1c7ed6}
+.day{display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.ok{color:var(--ok);font-weight:700}
+.t{font-size:44px;font-weight:700;text-align:center;font-variant-numeric:tabular-nums}
+.line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--ln)}
+.line:last-child{border:0}
+.link{background:none;border:0;color:var(--mu);text-decoration:underline;cursor:pointer;padding:10px}
+.banner{background:var(--ac);color:#fff;border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:14px}
+</style></head><body><div id="app"></div>
+<script>
+const D=(ex,add)=>({ex,add}),R={rest:1},M={max:1};
+const bx=(s,r,p)=>[s,r,p,"박스 스쿼트"],ng=[2,1,100,"스쿼트 네거티브"],pl=[3,"60초",0,"플랭크"];
+const a1=[[3,8,65],[1,5,70],[2,2,75],[1,1,80]];
+const base=a=>[D([[4,9,70]],a),D([[5,7,75]],a),D([[7,5,80]],a),D([[10,3,85]],a)];
+const jr=a=>[D([[6,6,70]],a),D([[7,5,75]],a),D([[8,4,80]],a),D([[10,3,85]],a)];
+const PR={
+full:{name:"정식 Smolov (13주)",ph:["도입기","도입기","베이스","베이스","베이스","베이스","전환기","전환기","강도기","강도기","강도기","강도기","테이퍼"],weeks:[
+[D(a1),D(a1),D([[4,5,70],[1,3,75],[2,2,80],[1,1,90]])],
+[D([[1,5,80]]),D([[1,5,82.5]]),D([[1,5,85]])],
+base([0,0]),base([10,20]),base([15,30]),[R,R,M,M],
+[D([bx(10,2,50),pl]),D([ng]),D([bx(10,2,55)])],
+[D([bx(12,2,55),pl]),D([ng]),D([bx(12,2,60)])],
+[D([[1,3,65],[1,4,75],[3,4,85],[1,5,85]]),D([[1,3,60],[1,3,70],[1,4,80],[1,3,90],[2,5,85]]),D([[1,4,65],[1,4,70],[5,4,80]])],
+[D([[1,4,60],[1,4,70],[1,4,80],[1,3,90],[2,4,90]]),D([[1,3,65],[1,3,75],[1,3,85],[3,3,90],[1,3,95]]),D([[1,3,65],[1,3,75],[1,4,85],[4,5,90]])],
+[D([[1,3,60],[1,3,70],[1,3,80],[5,5,90]]),D([[1,3,60],[1,3,70],[1,3,80],[2,3,95]]),D([[1,3,65],[1,3,75],[1,3,85],[4,3,95]])],
+[D([[1,3,70],[1,4,80],[5,5,90]]),D([[1,3,70],[1,3,80],[4,3,95]]),D([[1,3,75],[1,4,90],[3,4,95]])],
+[D([[1,3,70],[1,3,80],[2,5,90],[3,4,95]]),D([[1,4,75],[4,4,85]]),M]]},
+jr:{name:"Smolov Jr (3주)",ph:["Jr","Jr","Jr"],weeks:[jr([0,0]),jr([5,10]),jr([10,20])]}};
+let S={rm:"",unit:"kg",prog:"full",done:{},w:0,d:0,scr:"setup"},RN=null,iv=null,banner="";
+try{const x=JSON.parse(localStorage.getItem("smolov1"));if(x){S=Object.assign(S,x);if(S.rm)S.scr="plan"}}catch(e){}
+const save=()=>{try{localStorage.setItem("smolov1",JSON.stringify({rm:S.rm,unit:S.unit,prog:S.prog,done:S.done}))}catch(e){}};
+const P=()=>PR[S.prog],$=s=>document.querySelector(s);
+const key=(w,d)=>S.prog+"-"+w+"-"+d,step=()=>S.unit=="kg"?2.5:5;
+const wt=(p,a)=>Math.round((S.rm*p/100+(a?a[S.unit=="kg"?0:1]:0))/step())*step();
+const mmss=ms=>{const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")};
+function items(dy){const ex=dy.max?[[1,5,60],[1,3,75],[1,1,85],[1,1,95],[1,1,100,"1RM 도전"]]:dy.ex,o=[];
+ ex.forEach(e=>{for(let i=0;i<e[0];i++)o.push({r:e[1],p:e[2],n:e[3]||"스쿼트",w:e[2]?wt(e[2],dy.add):null,a:dy.add})});return o}
+function first(){for(let w=0;w<P().weeks.length;w++)for(let d=0;d<P().weeks[w].length;d++){const y=P().weeks[w][d];if(!y.rest&&!S.done[key(w,d)]){S.w=w;S.d=d;return}}S.w=0;S.d=0}
+function go(s){S.scr=s;render()}
+function setUnit(u){if(u==S.unit)return;if(S.rm)S.rm=u=="lb"?Math.round(S.rm*2.2046):Math.round(S.rm/2.2046/2.5)*2.5;S.unit=u;save();render()}
+function begin(){const v=parseFloat($("#rm").value);if(!v||v<=0)return;S.rm=v;save();first();go("plan")}
+function setProg(p){S.prog=p;save();render()}
+function editRm(){const v=parseFloat(prompt("현재 1RM ("+S.unit+")",S.rm));if(v>0){S.rm=v;save();render()}}
+function resetAll(){if(confirm("모든 기록과 설정을 지울까요?")){S.done={};S.rm="";save();go("setup")}}
+function shift(n){const m=P().weeks.length;S.w=Math.max(0,Math.min(m-1,S.w+n));render()}
+function openDay(d){S.d=d;go("day")}
+function fmtGroups(dy){const it=items(dy),g=[];it.forEach(x=>{const l=g[g.length-1];if(l&&l.r==x.r&&l.p==x.p&&l.n==x.n)l.c++;else g.push({...x,c:1})});return g}
+function render(){const A=$("#app");clearInterval(iv);
+ if(S.scr=="setup"){A.innerHTML=`<h1>Smolov 스쿼트</h1><div class="card"><h2>1RM 입력</h2><input id="rm" type="number" inputmode="decimal" placeholder="예: 140" value="${S.rm}"><div class="row" style="margin-top:10px"><button class="btn ${S.unit=="kg"?"on":""}" onclick="setUnit('kg')">kg</button><button class="btn ${S.unit=="lb"?"on":""}" onclick="setUnit('lb')">lbs</button></div></div><div class="card"><h2>프로그램</h2><div class="row"><button class="btn ${S.prog=="full"?"on":""}" onclick="setProg('full')">정식 13주</button><button class="btn ${S.prog=="jr"?"on":""}" onclick="setProg('jr')">Smolov Jr 3주</button></div></div><button class="big" onclick="begin()">프로그램 시작</button>`;return}
+ if(S.scr=="plan"){const wk=P().weeks[S.w];let h=`<div class="row" style="margin-bottom:8px"><h1 style="margin:0">${P().name}</h1></div><div class="card"><div class="row"><div><div class="mu">1RM · ${S.unit}</div><div style="font-size:26px;font-weight:700">${S.rm}</div></div><button class="btn" onclick="editRm()">수정</button><button class="btn" onclick="go('setup')">설정</button></div></div>`;
+ if(S.prog=="full"&&S.w==6)h+=`<div class="banner">6주차 결과로 새 1RM이 나왔다면 위에서 수정하세요. 이후 퍼센트가 새 1RM 기준으로 계산됩니다.</div>`;
+ h+=`<div class="row" style="margin-bottom:10px"><button class="btn" onclick="shift(-1)">◀</button><div style="text-align:center;font-weight:700">${S.w+1}주차 · ${P().ph[S.w]}</div><button class="btn" onclick="shift(1)">▶</button></div>`;
+ wk.forEach((y,i)=>{const dn=S.done[key(S.w,i)];h+=`<div class="card day" ${y.rest?"":`onclick="openDay(${i})"`}><div><b>${i+1}일차</b><div class="mu">${y.rest?"휴식일":y.max?"1RM 빌드업 · 최대 도전":fmtGroups(y).map(g=>g.c+"×"+g.r+(g.p?" @"+g.p+"%":"")).join(" / ")}</div></div>${dn?`<span class="ok">✓ ${mmss(dn.total)}</span>`:y.rest?"":`<span class="mu">›</span>`}</div>`});
+ h+=`<button class="link" onclick="resetAll()">기록 초기화</button>`;A.innerHTML=h;return}
+ if(S.scr=="day"){const y=P().weeks[S.w][S.d],g=fmtGroups(y);let h=`<button class="link" onclick="go('plan')">‹ 목록</button><h1>${S.w+1}주차 ${S.d+1}일차</h1><div class="card">`;
+ g.forEach(x=>{h+=`<div class="line"><span>${x.n}<br><span class="mu">${x.c}세트 × ${x.r}${typeof x.r=="number"?"회":""}${x.p?" · "+x.p+"%":""}</span></span><b style="font-size:20px">${x.w!=null?x.w+" "+S.unit:"-"}</b></div>`});
+ A.innerHTML=h+`</div><button class="big" onclick="startRun()">운동 준비</button>`;return}
+ if(S.scr=="run"){const it=RN.it,c=it[RN.i];let h=`<button class="link" onclick="if(confirm('운동을 중단하고 홈으로 갈까요? 이번 기록은 저장되지 않아요.')){stopRun();go('plan')}">‹ 홈</button><div class="mu" style="text-align:center">총 운동 시간</div><div class="t" id="tot">00:00</div><div class="card" style="margin-top:12px;text-align:center"><div class="mu">${RN.ph=="rest"?"휴식 중 · 다음":"세트 "+(RN.i+1)+" / "+it.length}</div>`;
+ const nx=RN.ph=="rest"?it[RN.i+1]:c;
+ h+=`<div style="font-size:15px">${nx.n}</div><div style="font-size:34px;font-weight:700">${nx.w!=null?nx.w+" "+S.unit:"맨몸"} × ${nx.r}</div><div class="t" id="cur" style="font-size:36px;color:${RN.ph=="rest"?"#1c7ed6":"var(--ac)"}">${RN.ph=="idle"?"":"00:00"}</div><div class="mu">${RN.ph=="set"?"세트 진행 시간":RN.ph=="rest"?"실제 휴식 시간":""}</div></div>`;
+ const last=RN.ph=="set"&&RN.i==it.length-1;
+ h+=`<button class="big ${RN.ph=="rest"?"rest":""}" onclick="tap()">${RN.ph=="idle"?"운동 시작":RN.ph=="set"?(last?"운동 종료":"세트 완료"):"다음 세트 시작"}</button><div class="card" style="margin-top:12px"><h2>기록</h2>`;
+ if(!RN.log.length)h+=`<div class="mu">아직 완료한 세트가 없어요</div>`;
+ RN.log.forEach((l,i)=>{h+=`<div class="line"><span>#${i+1} ${it[i].w!=null?it[i].w+S.unit+" × ":""}${it[i].r}</span><span class="mu">세트 ${mmss(l.dur)} · 휴식 ${l.rest!=null?mmss(l.rest):"-"}</span></div>`});
+ A.innerHTML=h+`</div><button class="link" onclick="if(confirm('운동을 중단할까요?')){stopRun();go('day')}">중단</button>`;
+ iv=setInterval(tick,250);tick();return}
+ if(S.scr=="done"){const r=RN.sum,rs=r.sets.filter(x=>x.rest!=null);A.innerHTML=`<h1>운동 완료 🎉</h1><div class="card"><div class="line"><span>총 시간</span><b>${mmss(r.total)}</b></div><div class="line"><span>완료 세트</span><b>${r.sets.length}</b></div><div class="line"><span>평균 휴식</span><b>${rs.length?mmss(rs.reduce((a,b)=>a+b.rest,0)/rs.length):"-"}</b></div></div><button class="big" onclick="first();go('plan')">다음 운동으로</button><button class="link" style="width:100%" onclick="go('plan')">‹ 홈으로</button>`}}
+function tick(){const n=Date.now();if($("#tot"))$("#tot").textContent=mmss(RN.t0?n-RN.t0:0);if($("#cur")&&RN.ph!="idle")$("#cur").textContent=mmss(n-RN.ts)}
+async function wl(){try{RN.lock=await navigator.wakeLock.request("screen")}catch(e){}}
+function startRun(){RN={it:items(P().weeks[S.w][S.d]),i:0,ph:"idle",t0:0,ts:0,log:[]};wl();go("run")}
+function stopRun(){try{RN.lock&&RN.lock.release()}catch(e){}}
+function tap(){const n=Date.now();
+ if(RN.ph=="idle"){RN.t0=RN.ts=n;RN.ph="set"}
+ else if(RN.ph=="set"){const dur=n-RN.ts;RN.log.push({dur,rest:null});
+  if(RN.i==RN.it.length-1){const total=n-RN.t0;RN.sum={total,sets:RN.log,date:new Date().toISOString()};S.done[key(S.w,S.d)]=RN.sum;save();stopRun();return go("done")}
+  RN.ph="rest";RN.ts=n}
+ else{RN.log[RN.log.length-1].rest=n-RN.ts;RN.i++;RN.ph="set";RN.ts=n}
+ try{navigator.vibrate&&navigator.vibrate(40)}catch(e){}
+ render()}
+render();
+if("serviceWorker" in navigator)navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script></body></html>
